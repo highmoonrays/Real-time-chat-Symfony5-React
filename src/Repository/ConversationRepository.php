@@ -101,12 +101,16 @@ class ConversationRepository extends ServiceEntityRepository
         $qb = $this->createQueryBuilder('c');
         $qb
             ->innerJoin('c.participants', 'p')
-            ->where('c.id = :conversation')
+            ->where('c.id = :conversationId')
                 ->andWhere(
-                    $qb->expr()->eq('p.user', ':userId'),
+                    $qb->expr()->eq('p.user', ':userId')
                 )
+            ->setParameters([
+                'conversationId' => $conversationId,
+                'userId' => $userId
+            ])
         ;
 
-        return $qb->getQuery()->getResult();
+        return $qb->getQuery()->getOneOrNullResult();
     }
 }
